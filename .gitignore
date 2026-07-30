@@ -21,7 +21,7 @@ env/
 
 # Generated outputs
 *.pdf
-*.txt
+# *.txt
 
 # Media
 *.mp3
