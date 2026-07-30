@@ -1,0 +1,327 @@
+/*=========================================================
+    MCOM STUDY GUIDE GENERATOR
+    Rocky Vista University Theme
+=========================================================*/
+
+
+/* ---------- Main App ---------- */
+
+
+/* ---------- App Background ---------- */
+
+.stApp {
+    background-color: #F7F9FC;
+}
+
+/* ---------- Page Width ---------- */
+
+.block-container {
+
+    max-width: 980px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+}
+
+/* ---------- Title Divider ---------- */
+
+.title-divider {
+
+    width: 100%;
+    max-width: 450px;
+    height: 2px;
+
+    margin: 1.75rem auto 2.25rem auto;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        #5A8FD8,
+        #22457A,
+        #5A8FD8,
+        transparent
+    );
+}
+
+/* ---------- Headers ---------- */
+
+.app-title {
+
+    color: #22457A !important;
+
+    font-size: 3rem;
+
+    font-weight: 800;
+
+    margin-bottom: .35rem;
+
+    text-align: center;
+}
+
+/* H1 */
+[data-testid="stHeading"] h1 {
+    color: #22457A !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    letter-spacing: 0.5px;
+}
+
+/* H2 */
+[data-testid="stHeading"] h2 {
+    color: #2B5797 !important;
+    font-weight: 700 !important;
+}
+
+/* H3 */
+[data-testid="stHeading"] h3 {
+    color: #F0C010 !important;
+    font-weight: 700 !important;
+}
+
+/* .section-header {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #22457A;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #F0C010;
+    padding-bottom: 0.35rem;
+} */
+
+.section-header {
+
+    color: #22457A;
+
+    font-size: 1.7rem;
+
+    font-weight: 700;
+
+    margin-bottom: 1rem;
+}
+
+/* ---------- File Uploader ---------- */
+
+[data-testid="stFileUploader"] {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+[data-testid="stFileUploaderDropzone"] {
+    background: rgba(43,87,151,0.05) !important;
+
+    border: 3px dashed #2B5797 !important;
+    border-radius: 18px !important;
+
+    padding: 1.25rem 1.5rem !important;
+
+    transition: all .25s ease;
+}
+
+[data-testid="stFileUploaderDropzone"]:hover {
+    background: rgba(43,87,151,0.10) !important;
+    border-color: #4B82CC !important;
+}
+
+/* Main uploader text */
+
+[data-testid="stFileUploaderDropzone"] > div > div > p {
+    color: #22457A !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+}
+
+/* Browse Files button */
+
+/* ---------- Browse Files Button ---------- */
+
+[data-testid="stFileUploaderDropzone"] button {
+
+    min-height: 52px;
+    min-width: 120px;
+
+    padding: 0.8rem 1.6rem !important;
+
+    background: linear-gradient(
+        to bottom,
+        #5A8FD8,
+        #346DBA
+    ) !important;
+
+    border: 2px solid #FFD84D !important;
+    border-radius: 12px !important;
+
+    box-shadow:
+        0 4px 12px rgba(34,69,122,.18);
+
+    transition: all .2s ease;
+}
+
+[data-testid="stFileUploaderDropzone"] button:hover {
+
+    background: linear-gradient(
+        to bottom,
+        #6A9CE2,
+        #4578C6
+    ) !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(34,69,122,.22);
+}
+
+[data-testid="stFileUploaderDropzone"] button p {
+
+    color: #FFD84D !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    letter-spacing: .3px;
+}
+
+[data-testid="stFileUploaderDropzone"] button svg {
+
+    width: 18px !important;
+    height: 18px !important;
+
+    margin-right: 6px;
+
+    color: #FFD84D !important;
+}
+
+
+/* Uploaded filename */
+[data-testid="stFileUploaderFile"] {
+    background: rgba(240,192,16,.10);
+    border-radius: 10px;
+}
+
+
+/* ---------- Text Area ---------- */
+
+textarea {
+    border-radius: 14px !important;
+    border: 2px solid #22457A !important;
+}
+
+textarea:focus {
+    border-color: #4B82CC !important;
+    box-shadow: 0 0 0 3px rgba(75,130,204,.25) !important;
+}
+
+
+/* ---------- Generate Button ---------- */
+
+div.stButton > button {
+    width: 100%;
+
+    background: linear-gradient(
+        to bottom,
+        #5A8FD8 0%,
+        #4B82CC 45%,
+        #346DBA 100%
+    );
+
+    color: #FFD84D;
+
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: .6px;
+
+    padding: 1.15rem 1.5rem;
+
+    border: 2px solid #FFD84D;
+    border-radius: 16px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 14px rgba(34,69,122,.20),
+        inset 0 1px 0 rgba(255,255,255,.35);
+
+    transition: all .2s ease;
+}
+
+div.stButton > button:hover {
+
+    background: linear-gradient(
+        to bottom,
+        #6A9CE2 0%,
+        #5A8FD8 45%,
+        #4578C6 100%
+    );
+
+    color: #FFD84D;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(34,69,122,.25),
+        inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+div.stButton > button:active {
+
+    transform: translateY(1px);
+
+    box-shadow:
+        0 3px 8px rgba(34,69,122,.20),
+        inset 0 2px 6px rgba(0,0,0,.12);
+}
+
+div.stButton > button:focus {
+
+    outline: none;
+
+    box-shadow:
+        0 0 0 4px rgba(255,216,77,.30),
+        0 8px 20px rgba(34,69,122,.20);
+}
+
+div.stButton button [data-testid="stMarkdownContainer"] p {
+    font-size: 1.3rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- Status Box ---------- */
+
+[data-testid="stStatusWidget"] {
+    border-radius: 14px;
+    border: 2px solid #22457A;
+}
+
+
+/* ---------- Download Button ---------- */
+
+[data-testid="stDownloadButton"] button {
+
+    background: #F0C010 !important;
+    color: #22457A !important;
+
+    border-radius: 14px !important;
+    border: none !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* ---------- Cards ---------- */
+
+.card {
+
+    background: white;
+
+    padding: 1.5rem;
+
+    margin-bottom: 1.75rem;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(34,69,122,.08);
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.05);
+}
