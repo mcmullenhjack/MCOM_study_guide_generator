@@ -110,19 +110,41 @@
 }
 
 [data-testid="stFileUploaderDropzone"] {
-    background: rgba(43,87,151,0.05) !important;
+    background: linear-gradient(
+        180deg,
+        #FCFDFF 0%,
+        #F7FAFE 100%
+    ) !important;
 
-    border: 3px dashed #2B5797 !important;
+    border: 2px solid #D6E4F5 !important;
     border-radius: 18px !important;
 
     padding: 1.25rem 1.5rem !important;
 
     transition: all .25s ease;
+
+    box-shadow:
+        inset 0 1px 3px rgba(255,255,255,.75),
+        0 2px 8px rgba(46,95,167,.06);
+
+    margin-top: -30px;
 }
 
 [data-testid="stFileUploaderDropzone"]:hover {
-    background: rgba(43,87,151,0.10) !important;
-    border-color: #4B82CC !important;
+    border-color:#2E5FA7 !important;
+
+    border: 2px solid #2E5FA7 !important;
+    background: linear-gradient(
+        180deg,
+        #F9FBFF 0%,
+        #F2F7FD 100%
+    ) !important;
+
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,.85),
+        0 6px 16px rgba(46,95,167,.10);
+
+    transform:translateY(-1px);
 }
 
 /* Main uploader text */
@@ -135,9 +157,9 @@
 
 /* Browse Files button */
 
-/* ---------- Browse Files Button ---------- */
+/* ---------- Upload Files Button ---------- */
 
-[data-testid="stFileUploaderDropzone"] button {
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"] {
 
     min-height: 52px;
     min-width: 120px;
@@ -159,7 +181,7 @@
     transition: all .2s ease;
 }
 
-[data-testid="stFileUploaderDropzone"] button:hover {
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"]:hover {
 
     background: linear-gradient(
         to bottom,
@@ -173,7 +195,7 @@
         0 7px 18px rgba(34,69,122,.22);
 }
 
-[data-testid="stFileUploaderDropzone"] button p {
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"] p {
 
     color: #FFD84D !important;
     font-size: 17px !important;
@@ -181,7 +203,7 @@
     letter-spacing: .3px;
 }
 
-[data-testid="stFileUploaderDropzone"] button svg {
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"] svg {
 
     width: 18px !important;
     height: 18px !important;
@@ -190,6 +212,112 @@
 
     color: #FFD84D !important;
 }
+
+/* ---------- Remove (x) Files Button ---------- */
+
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-minimal"] {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #2E5FA7 0%, #3B73C5 100%);
+    color: #FFD84D;
+    border: none;
+
+    transition: all 0.2s ease;
+}
+
+[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-minimal"]:hover {
+    background: linear-gradient(135deg, #3B73C5 0%, #4A84D8 100%);
+    transform: scale(1.08);
+}
+
+/* ---------- Add (+) Files Button ---------- */
+[data-testid="stBaseButton-borderlessIcon"] {
+    display: none !important;
+}
+
+/* Uploaded file chip */
+/* [data-testid="stFileChip"] {
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 46px;
+
+    display: flex !important;
+    align-items: center !important;
+
+    padding: 6px 12px;
+
+    border-radius: 12px;
+} */
+
+/* ==========================================
+   Uploaded File Chip
+   ========================================== */
+
+[data-testid="stFileChip"] {
+
+    /* Layout */
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-height: 52px !important;
+
+    /* Appearance */
+    background: #FFFFFF !important;
+    border: 1px solid #D5E2F2 !important;
+    border-left: 5px solid #F4C400 !important;
+    border-radius: 10px !important;
+
+    /* Spacing */
+    padding: 8px 14px !important;
+
+    /* Shadow */
+    box-shadow: 0 2px 8px rgba(35,64,122,.08);
+
+    transition: all .18s ease;
+}
+
+[data-testid="stFileChip"]:hover{
+    border-color:#2E5FA7 !important;
+    box-shadow:0 4px 14px rgba(35,64,122,.12);
+}
+
+[data-testid="stFileChipName"]{
+
+    color:#23407A !important;
+
+    font-size:.95rem !important;
+    font-weight:700 !important;
+
+    letter-spacing:.2px;
+}
+
+[data-testid="stFileChip"] .st-emotion-cache-k57wxy{
+
+    color:#7A8798 !important;
+
+    font-size:.78rem !important;
+    font-weight:500 !important;
+}
+
+/* File icon only */
+[data-testid="stFileChip"] > div:first-child svg {
+    color: #2E5FA7 !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+[data-testid="stFileUploaderDropzone"]:has([data-testid="stFileChip"]){
+
+    border-color:#2E5FA7 !important;
+    background:#FCFDFF;
+}
+
+/* ----------------------------------------------------------------------- */
 
 
 /* Uploaded filename */
@@ -201,7 +329,7 @@
 
 /* ---------- Text Area ---------- */
 
-textarea {
+/* textarea {
     border-radius: 14px !important;
     border: 2px solid #22457A !important;
 }
@@ -209,8 +337,80 @@ textarea {
 textarea:focus {
     border-color: #4B82CC !important;
     box-shadow: 0 0 0 3px rgba(75,130,204,.25) !important;
+} */
+
+/* ==========================================
+   Text Area
+   ========================================== */
+
+[data-testid="stTextArea"] textarea {
+
+    background: linear-gradient(
+        180deg,
+        #FCFDFF 0%,
+        #F7FAFE 100%
+    ) !important;
+
+    border: 2px solid #D6E4F5 !important;
+    border-radius: 16px !important;
+
+    color: #23407A !important;
+
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+
+    padding: 16px !important;
+
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,.75),
+        0 3px 10px rgba(46,95,167,.06);
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
 }
 
+[data-testid="stTextArea"] textarea:focus {
+
+    border-color: #2E5FA7 !important;
+    border-radius: 16px !important;
+
+    background: #FFFFFF !important;
+
+    /* box-shadow:
+        0 0 0 4px rgba(46,95,167,.12),
+        0 6px 16px rgba(46,95,167,.10); */
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,.75),
+        0 3px 10px rgba(46,95,167,.06);
+
+    /* outline: none !important; */
+}
+
+[data-testid="stTextArea"] textarea::placeholder {
+
+    color: #8A98AA !important;
+
+    font-style: italic;
+}
+
+
+[data-testid="stTextAreaRootElement"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+[data-testid="stTextAreaRootElement"]:focus-within {
+    border-color: #2E5FA7 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
 
 /* ---------- Generate Button ---------- */
 
@@ -218,30 +418,38 @@ div.stButton > button {
     width: 100%;
 
     background: linear-gradient(
-        to bottom,
-        #5A8FD8 0%,
-        #4B82CC 45%,
-        #346DBA 100%
+        180deg,
+        #5F96E2 0%,
+        #4A84D8 55%,
+        #2F68B8 100%
     );
 
     color: #FFD84D;
 
     font-size: 26px;
     font-weight: 800;
-    letter-spacing: .6px;
+    letter-spacing: .35px;
 
-    padding: 1.15rem 1.5rem;
+    padding: 1.3rem 1.6rem;
 
-    border: 2px solid #FFD84D;
+    border: 2.5px solid #F4C400;
     border-radius: 16px;
 
     cursor: pointer;
 
+    
     box-shadow:
-        0 5px 14px rgba(34,69,122,.20),
+        0 6px 16px rgba(35,64,122,.18),
+        0 14px 28px rgba(35,64,122,.10),
         inset 0 1px 0 rgba(255,255,255,.35);
 
-    transition: all .2s ease;
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+
+    position: relative;
+    overflow: hidden;
 }
 
 div.stButton > button:hover {
@@ -255,7 +463,9 @@ div.stButton > button:hover {
 
     color: #FFD84D;
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-3px)
+        scale(1.01);
 
     box-shadow:
         0 8px 20px rgba(34,69,122,.25),
@@ -284,6 +494,30 @@ div.stButton button [data-testid="stMarkdownContainer"] p {
     font-size: 1.3rem !important;
     font-weight: 800 !important;
     letter-spacing: 0.5px;
+}
+
+div.stButton > button::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 60%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.18),
+        transparent
+    );
+
+    transition: left .6s ease;
+}
+
+div.stButton > button:hover::before {
+    left: 160%;
 }
 
 /* ---------- Status Box ---------- */

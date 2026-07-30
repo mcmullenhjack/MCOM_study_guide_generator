@@ -30,7 +30,7 @@ with center:
         width="stretch",
         # width=180
     )
-    
+         
 st.markdown(
     """
     <h1 class="app-title">
@@ -67,7 +67,7 @@ with st.container():
     st.markdown(
         """
         <div class="section-header">
-            Upload Lecture Recording
+            Upload Lecture Recording:
         </div>
         """,
         unsafe_allow_html=True,
