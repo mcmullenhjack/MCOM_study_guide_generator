@@ -46,6 +46,8 @@ If two documents appear inconsistent, identify the inconsistency instead of atte
 
 Do not prioritize one document over another.
 
+Sometimes, only one document may be uploaded, rather than multiple.
+
 ----------------------------------------------------------------------
 TARGET AUDIENCE
 ----------------------------------------------------------------------

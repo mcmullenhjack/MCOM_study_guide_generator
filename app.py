@@ -145,13 +145,13 @@ generate = st.button(
 if generate:
     
     # ensure user uploaded all the necessary files/info. If not, end
-    if not lecture_file:
-        st.error("Please upload a lecture recording.")
-        st.stop()
+    # if not lecture_file:
+    #     st.error("Please upload a lecture recording.")
+    #     st.stop()
 
-    if not slides_file:
-        st.error("Please upload the lecture slides.")
-        st.stop()
+    # if not slides_file:
+    #     st.error("Please upload the lecture slides.")
+    #     st.stop()
 
     if not learning_objectives:
         st.error("Please paste the learning objectives.")
