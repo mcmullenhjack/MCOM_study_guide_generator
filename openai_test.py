@@ -57,9 +57,9 @@ def load_system_prompt():
     )
 
 def generate_study_guide(
-    transcript_path: str,
-    slides_path: str,
     learning_objectives: str,
+    transcript_path: str | None = None,
+    slides_path: str | None = None,
     model: str = "gpt-5-mini",
     max_output_tokens: int = 1000
 ):
@@ -75,41 +75,72 @@ Return the response as well-formatted Markdown suitable for direct conversion to
 """
     
     # Upload transcript
-    st.write("Uploading Transcript...")
-    with open(transcript_path, "rb") as f:
-        transcript = client.files.create(
-            file=f,
-            purpose="user_data"
-        )
+    if transcript_path is not None:
+        st.write("Uploading Transcript...")
+        with open(transcript_path, "rb") as f:
+            transcript = client.files.create(
+                file=f,
+                purpose="user_data"
+            )
 
     # Upload slides
-    st.write("Uploading Slides...")
-    with open(slides_path, "rb") as f:
-        slides = client.files.create(
-            file=f,
-            purpose="user_data"
-        )
+    if slides_path is not None:
+        st.write("Uploading Slides...")
+        with open(slides_path, "rb") as f:
+            slides = client.files.create(
+                file=f,
+                purpose="user_data"
+            )
     
     # create the prompt
+    prompt_input_keys = ["type", "file_id"]
+    prompt_input_values = [
+        [
+            'input_file', 
+            transcript.id if transcript_path is not None else None
+        ],
+        [
+            'input_file', 
+            slides.id if slides_path is not None else None
+        ],
+        [
+            'input_text', 
+            user_prompt
+        ]
+    ]
+    
+    prompt_input_content = [
+        {key: value for key, value in zip(prompt_input_keys, row)}
+        for row in prompt_input_values
+            if row[1] is not None
+    ]
+    
     prompt_input = [
         {
             "role": "user",
-            "content": [
-                {
-                    "type": "input_file",
-                    "file_id": transcript.id,
-                },
-                {
-                    "type": "input_file",
-                    "file_id": slides.id,
-                },
-                {
-                    "type": "input_text",
-                    "text": user_prompt,
-                },
-            ],
+            "content": prompt_input_content
         }
     ]
+    
+    # prompt_input = [
+    #     {
+    #         "role": "user",
+    #         "content": [
+    #             {
+    #                 "type": "input_file",
+    #                 "file_id": transcript.id,
+    #             },
+    #             {
+    #                 "type": "input_file",
+    #                 "file_id": slides.id,
+    #             },
+    #             {
+    #                 "type": "input_text",
+    #                 "text": user_prompt,
+    #             },
+    #         ],
+    #     }
+    # ]
         
     system_prompt = Path("prompts/system_prompt.md").read_text(
         encoding="utf-8"

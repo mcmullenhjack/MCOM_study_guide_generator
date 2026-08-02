@@ -161,14 +161,20 @@ if generate:
     with st.status("Generating Study Guide...", expanded=True) as status:
     
         # transcribe the lecture from uploaded path
-        st.write("Transcribing Lecture...")
-        model = load_whisper_model()
-        transcript_path = transcribe_lecture(media_path, model)
+        if media_path:
+            st.write("Transcribing Lecture...")
+            model = load_whisper_model()
+            transcript_path = transcribe_lecture(media_path, model)
+        else: 
+            transcript_path = None
 
         # convert user uploaded powerpoint to PDF
-        st.write("Converting PowerPoint to PDF...")
-        slides_path = pptx_to_pdf(pptx_path)
-
+        if pptx_path:
+            st.write("Converting PowerPoint to PDF...")
+            slides_path = pptx_to_pdf(pptx_path)
+        else:
+            slides_path = None
+            
         # generate study guide. Don't crash app if unsuccessful
         try:
             pdf_bytes = generate_study_guide(
