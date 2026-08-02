@@ -77,6 +77,7 @@ with st.container():
         type=["mp4", "m4a", "mp3", "wav"],
         label_visibility="collapsed"
     )
+    media_path = None
 
 # allow user to upload lecture slides (powerpoint)
 # st.markdown("### ")
@@ -94,6 +95,7 @@ with st.container():
         type=["pptx"],
         label_visibility="collapsed"
     )
+    pptx_path = None
 
 # save them to temp file
 if lecture_file:
