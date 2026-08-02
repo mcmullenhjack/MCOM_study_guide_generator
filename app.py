@@ -100,6 +100,7 @@ with st.container():
 # save them to temp file
 if lecture_file:
     media_path = save_uploaded_file(lecture_file)
+    print("saving media path")
     
 if slides_file:
     pptx_path = save_uploaded_file(slides_file)

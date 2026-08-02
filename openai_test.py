@@ -75,7 +75,7 @@ Return the response as well-formatted Markdown suitable for direct conversion to
 """
     
     # Upload transcript
-    if transcript_path is not None:
+    if transcript_path:
         st.write("Uploading Transcript...")
         with open(transcript_path, "rb") as f:
             transcript = client.files.create(
@@ -84,7 +84,7 @@ Return the response as well-formatted Markdown suitable for direct conversion to
             )
 
     # Upload slides
-    if slides_path is not None:
+    if slides_path:
         st.write("Uploading Slides...")
         with open(slides_path, "rb") as f:
             slides = client.files.create(
@@ -93,7 +93,12 @@ Return the response as well-formatted Markdown suitable for direct conversion to
             )
     
     # create the prompt
-    prompt_input_keys = ["type", "file_id"]
+    prompt_input_keys = [
+        ["type", "file_id"], 
+        ["type", "file_id"], 
+        ["type", "text"]
+    ]
+    
     prompt_input_values = [
         [
             'input_file', 
@@ -110,9 +115,9 @@ Return the response as well-formatted Markdown suitable for direct conversion to
     ]
     
     prompt_input_content = [
-        {key: value for key, value in zip(prompt_input_keys, row)}
-        for row in prompt_input_values
-            if row[1] is not None
+        {key: value for key, value in zip(keys, vals)}
+        for keys, vals in zip(prompt_input_keys, prompt_input_values)
+            if vals[1] is not None
     ]
     
     prompt_input = [
@@ -147,6 +152,7 @@ Return the response as well-formatted Markdown suitable for direct conversion to
     )
 
     st.write("Writing Study Guide...")
+    print(prompt_input)
     response = client.responses.create(
         model=model,
         instructions=system_prompt,
