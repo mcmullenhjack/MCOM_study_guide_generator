@@ -196,6 +196,10 @@ if generate:
         if lecture_file:
             lecture_name = Path(lecture_file.name).stem
             auto_output_name = f"{lecture_name} - Study Guide.pdf"
+            
+        else:
+            lecture_name = Path(slides_file.name).stem
+            auto_output_name = f"{lecture_name} - Study Guide.pdf"
 
         st.download_button(
             "Download Study Guide",
