@@ -7,7 +7,12 @@ import tempfile
 # import helper functions
 from lecture_transcriber import transcribe_lecture
 from pptx_to_pdf_test import pptx_to_pdf
-from openai_test import generate_study_guide
+from openai_test import (
+    generate_study_guide,
+    generate_anki_cards
+)
+
+from anki_generator import create_anki_deck
 
 def load_css():
     css = Path("style.css").read_text()
@@ -92,7 +97,7 @@ with st.container():
     )
     slides_file = st.file_uploader(
         "Upload Lecture Slides:",
-        type=["pptx"],
+        type=["pptx", "pdf"],
         label_visibility="collapsed"
     )
     pptx_path = None
@@ -100,7 +105,6 @@ with st.container():
 # save them to temp file
 if lecture_file:
     media_path = save_uploaded_file(lecture_file)
-    print("saving media path")
     
 if slides_file:
     pptx_path = save_uploaded_file(slides_file)
@@ -140,22 +144,18 @@ with st.container():
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-generate = st.button(
-    "Generate & Download Study Guide",
+generate_study = st.button(
+    "Generate Study Guide",
     use_container_width=True
 )
 
-if generate:
+generate_anki = st.button(
+    "Generate Anki Deck (.apkg)",
+    use_container_width=True
+)
+
+if generate_study:
     
-    # ensure user uploaded all the necessary files/info. If not, end
-    # if not lecture_file:
-    #     st.error("Please upload a lecture recording.")
-    #     st.stop()
-
-    # if not slides_file:
-    #     st.error("Please upload the lecture slides.")
-    #     st.stop()
-
     if not learning_objectives:
         st.error("Please paste the learning objectives.")
         st.stop()
@@ -174,7 +174,11 @@ if generate:
         # convert user uploaded powerpoint to PDF
         if pptx_path:
             st.write("Converting PowerPoint to PDF...")
-            slides_path = pptx_to_pdf(pptx_path)
+            
+            if pptx_path.suffix == '.pptx':
+                slides_path = pptx_to_pdf(pptx_path)
+            else:
+                slides_path = pptx_path
         else:
             slides_path = None
             
@@ -211,3 +215,99 @@ if generate:
         status.update(
             label = "Study Guide Completed!", state = "complete", expanded=True
         )
+
+
+#### GENERATE ANKI DECK ####
+if generate_anki:
+
+    if not learning_objectives:
+        st.error("Please paste the learning objectives.")
+        st.stop()
+
+
+    with st.status(
+        "Generating Anki Deck...",
+        expanded=True
+    ) as status:
+
+
+        # Transcribe lecture if provided
+        if media_path:
+
+            st.write("Transcribing Lecture...")
+
+            model = load_whisper_model()
+
+            transcript_path = transcribe_lecture(
+                media_path,
+                model
+            )
+
+        else:
+
+            transcript_path = None
+
+
+        # Convert PowerPoint if provided
+        if pptx_path:
+
+            st.write("Converting PowerPoint to PDF...")
+
+            slides_path = pptx_to_pdf(
+                pptx_path
+            )
+
+        else:
+
+            slides_path = None
+
+
+        st.write("Creating Anki Cards...")
+
+
+        anki_data = generate_anki_cards(
+            transcript_path=transcript_path,
+            slides_path=slides_path,
+            learning_objectives=learning_objectives,
+            model="gpt-5.5"
+        )
+
+
+        st.write("Building Anki Deck...")
+
+
+        if lecture_file:
+
+            lecture_name = Path(
+                lecture_file.name
+            ).stem
+
+        else:
+
+            lecture_name = Path(
+                slides_file.name
+            ).stem
+
+
+        anki_path = create_anki_deck(
+            deck_name=lecture_name,
+            cards=anki_data["cards"]
+        )
+
+
+        with open(anki_path, "rb") as f:
+
+            st.download_button(
+                "Download Anki Deck",
+                data=f,
+                file_name=f"{lecture_name} - Anki Deck.apkg",
+                mime="application/octet-stream"
+            )
+
+
+        status.update(
+            label="Anki Deck Completed!",
+            state="complete",
+            expanded=True
+        )
+    
