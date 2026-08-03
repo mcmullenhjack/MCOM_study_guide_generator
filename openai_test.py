@@ -8,6 +8,9 @@ import pypandoc
 import tempfile
 import streamlit as st
 
+# for anki
+import json
+
 
 # create the API instance with project api key
 def create_client():
@@ -22,6 +25,31 @@ def upload_file(client, file_path):
             file=f,
             purpose="user_data"
         )
+        
+def upload_source_files(
+    client,
+    transcript_path: str | None = None,
+    slides_path: str | None = None
+):
+
+    transcript = None
+    slides = None
+
+    if transcript_path:
+        st.write("Uploading Transcript...")
+        transcript = upload_file(
+            client,
+            transcript_path
+        )
+
+    if slides_path:
+        st.write("Uploading Slides...")
+        slides = upload_file(
+            client,
+            slides_path
+        )
+
+    return transcript, slides
 
 # ## define file paths
 # files_to_upload = [
@@ -60,8 +88,8 @@ def generate_study_guide(
     learning_objectives: str,
     transcript_path: str | None = None,
     slides_path: str | None = None,
-    model: str = "gpt-5-mini",
-    max_output_tokens: int = 1000
+    model: str = "gpt-5.5",
+    max_output_tokens: int = 20000
 ):
     
     client = create_client()
@@ -126,27 +154,7 @@ Return the response as well-formatted Markdown suitable for direct conversion to
             "content": prompt_input_content
         }
     ]
-    
-    # prompt_input = [
-    #     {
-    #         "role": "user",
-    #         "content": [
-    #             {
-    #                 "type": "input_file",
-    #                 "file_id": transcript.id,
-    #             },
-    #             {
-    #                 "type": "input_file",
-    #                 "file_id": slides.id,
-    #             },
-    #             {
-    #                 "type": "input_text",
-    #                 "text": user_prompt,
-    #             },
-    #         ],
-    #     }
-    # ]
-        
+            
     system_prompt = Path("prompts/system_prompt.md").read_text(
         encoding="utf-8"
     )
@@ -190,3 +198,100 @@ Return the response as well-formatted Markdown suitable for direct conversion to
         pdf_bytes = f.read()
     
     return pdf_bytes
+
+def generate_anki_cards(
+    learning_objectives: str,
+    transcript_path: str | None = None,
+    slides_path: str | None = None,
+    model: str = "gpt-5.5",
+):
+
+    client = create_client()
+
+    anki_prompt = f"""
+Generate Anki cards from the following learning objectives:
+
+{learning_objectives}
+"""
+
+
+    transcript, slides = upload_source_files(
+        client,
+        transcript_path,
+        slides_path
+    )
+
+
+    prompt_input_content = []
+
+
+    if transcript:
+        prompt_input_content.append(
+            {
+                "type": "input_file",
+                "file_id": transcript.id
+            }
+        )
+
+
+    if slides:
+        prompt_input_content.append(
+            {
+                "type": "input_file",
+                "file_id": slides.id
+            }
+        )
+
+
+    prompt_input_content.append(
+        {
+            "type": "input_text",
+            "text": anki_prompt
+        }
+    )
+
+
+    prompt_input = [
+        {
+            "role": "user",
+            "content": prompt_input_content
+        }
+    ]
+
+
+    anki_system_prompt = Path(
+        "prompts/anki_system_prompt.md"
+    ).read_text(
+        encoding="utf-8"
+    )
+
+
+    st.write("Generating Anki Cards...")
+
+
+    response = client.responses.create(
+        model=model,
+        instructions=anki_system_prompt,
+        input=prompt_input,
+        max_output_tokens=20000
+    )
+
+    print(response.output_text)
+    
+    raw_output = response.output_text.strip()
+
+    if raw_output.startswith("```"):
+        raw_output = raw_output.replace("```json", "")
+        raw_output = raw_output.replace("```", "")
+        raw_output = raw_output.strip()
+
+    anki_data = json.loads(raw_output)
+
+    return anki_data
+    # print("===== RAW ANKI OUTPUT =====")
+    # print(response.output_text)
+    # print("============================")
+
+    # return json.loads(
+    #     response.output_text
+    # )
