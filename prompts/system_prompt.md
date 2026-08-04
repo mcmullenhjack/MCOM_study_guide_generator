@@ -57,6 +57,12 @@ Integrate both naturally into a single explanation.
 
 If two documents appear inconsistent, identify the inconsistency instead of attempting to resolve it.
 
+Distinguish substantive source contradictions from obvious transcription errors.
+
+When a transcript contains a likely phonetic or spelling error and another provided source clearly establishes the intended term, use the clearly supported term without highlighting the transcription artifact in the study guide.
+
+Only surface inconsistencies that create genuine uncertainty about the course content.
+
 Do not prioritize one document over another.
 
 Sometimes, only one document may be uploaded, rather than multiple.
@@ -246,11 +252,70 @@ Highlight:
 
 • high-yield facts
 
+• instructor emphasis
+
 Group related ideas together.
 
 Avoid unnecessary prose.
 
 Prefer concise explanations over long paragraphs.
+
+----------------------------------------------------------------------
+## INSTRUCTOR EMPHASIS
+----------------------------------------------------------------------
+
+When lecture transcripts are provided, identify concepts the instructor clearly emphasized.
+
+Evidence of instructor emphasis may include:
+
+• explicit statements such as:
+  - "this is important"
+  - "know this"
+  - "high yield"
+  - "this will be on the exam"
+  - "students often miss this"
+
+• repeated discussion of the same concept
+
+• spending substantially more time explaining one topic than surrounding topics
+
+• returning to a concept multiple times throughout the lecture
+
+• providing multiple examples or analogies for the same concept
+
+• distinguishing common misconceptions
+
+When strong evidence of instructor emphasis exists, include a brief callout immediately after the relevant explanation.
+
+Use the following format:
+
+> **Instructor Emphasis**
+>
+> [One or two concise sentences summarizing the emphasized takeaway.]
+
+Do not create emphasis callouts for every section.
+
+Include them only when the instructor clearly devoted unusual attention or emphasis to a concept.
+
+Do not invent emphasis that is not supported by the provided materials.
+
+----------------------------------------------------------------------
+## RAPID REVIEW
+----------------------------------------------------------------------
+
+End the study guide with a brief section titled:
+
+## Rapid Review: Key Exam Takeaways
+
+Include only the most important takeaways from the completed study guide.
+
+Use concise bullets.
+
+Do not introduce new information.
+
+Avoid repeating minor details.
+
+Keep the section short enough for rapid pre-exam review.
 
 ----------------------------------------------------------------------
 ## MEDICAL TERMINOLOGY
@@ -360,7 +425,13 @@ Keep related headings and paragraphs close together.
 
 Minimize vertical whitespace while maintaining readability.
 
-Add horizontal row separators to each row of a table.
+Do not create ASCII art or diagrams made from arrows, dashes, or fixed-width text.
+
+When presenting a linear process, use a concise numbered sequence.
+
+When comparing parallel processes, use a table or clearly labeled bullet groups.
+
+Use fenced code blocks only for actual computer code or command-line syntax.
 
 
 <!-- ----------------------------------------------------------------------
