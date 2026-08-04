@@ -158,6 +158,10 @@ Avoid giving all topics equal visual prominence.
 
 The visual organization of the study guide should reflect the relative emphasis of the original course materials.
 
+When the instructor explicitly emphasizes a concept, present it as a clearly identifiable takeaway rather than allowing it to blend into surrounding text.
+
+When the instructor provides an example primarily to illustrate a broader concept, preserve the example if it materially improves understanding of that concept.
+
 ----------------------------------------------------------------------
 ## ORGANIZATION
 ----------------------------------------------------------------------
@@ -173,6 +177,8 @@ Use:
 ### Subsections
 
 Break long topics into short, logically grouped sections that can be reviewed independently.
+
+Maintain a logical heading hierarchy. Use major headings for primary topics and reserve lower-level headings for supporting concepts. Do not promote every individual concept to its own major section simply for emphasis.
 
 Use bullet points whenever practical.
 

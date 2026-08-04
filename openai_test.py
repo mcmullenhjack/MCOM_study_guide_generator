@@ -190,7 +190,7 @@ Return the response as well-formatted Markdown suitable for direct conversion to
             "--number-sections",        # Number headings
             "-V", "geometry:margin=1in",
             "-V", "fontsize=11pt",
-            # "-V", "colorlinks=false",
+            "-V", "mainfont=Libertinus Serif", # need to use because latin modern doesn't have greek symbols for some reason
         ],
     )
     
