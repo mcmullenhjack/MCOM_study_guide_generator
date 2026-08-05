@@ -9,6 +9,7 @@ from lecture_transcriber import transcribe_lecture
 from pptx_to_pdf_test import pptx_to_pdf
 from openai_test import (
     generate_study_guide,
+    generate_anki_mastery_plan,
     generate_anki_cards
 )
 
@@ -26,7 +27,16 @@ st.set_page_config(
     layout="wide"
 )
 
+# load our custom CSS styling
 load_css()
+
+# Initialize the study guide. When study guide is created, it's stored in cache
+if "study_guide" not in st.session_state:
+    st.session_state.study_guide = None
+
+# Save its file name as well for easy access
+if "study_guide_filename" not in st.session_state:
+    st.session_state.study_guide_filename = None
 
 left, center, right = st.columns([1,2,1])
 with center:
@@ -67,6 +77,54 @@ def save_uploaded_file(uploaded_file):
 
     return file_path
 
+# Helper function to clear generated study guide so user does not accidentally
+# create anki cards from a previously cached study guide.
+def clear_generated_outputs():
+    st.session_state.study_guide = None
+    st.session_state.study_guide_filename = None
+    
+# combine the transcripts of all uploaded lectures
+def combine_transcripts(
+    transcript_paths: list[Path],
+) -> Path | None:
+    if not transcript_paths:
+        return None
+
+    combined_sections: list[str] = []
+
+    for index, transcript_path in enumerate(
+        transcript_paths,
+        start=1,
+    ):
+        transcript_text = transcript_path.read_text(
+            encoding="utf-8",
+        ).strip()
+
+        combined_sections.append(
+            "\n".join(
+                [
+                    "=" * 60,
+                    f"LECTURE RECORDING {index}",
+                    f"SOURCE FILE: {transcript_path.name}",
+                    "=" * 60,
+                    "",
+                    transcript_text,
+                ]
+            )
+        )
+
+    combined_path = (
+        Path(tempfile.gettempdir())
+        / "combined_lecture_transcript.txt"
+    )
+
+    combined_path.write_text(
+        "\n\n".join(combined_sections),
+        encoding="utf-8",
+    )
+
+    return combined_path
+
 # allow user to upload lecture file
 with st.container():
     st.markdown(
@@ -77,12 +135,14 @@ with st.container():
         """,
         unsafe_allow_html=True,
     )
-    lecture_file = st.file_uploader(
-        "Upload Lecture Recording:",
+    lecture_files = st.file_uploader(
+        "Upload Lecture Recordings:",
         type=["mp4", "m4a", "mp3", "wav"],
-        label_visibility="collapsed"
+        accept_multiple_files=True,
+        label_visibility="collapsed",
+        on_change=clear_generated_outputs,
     )
-    media_path = None
+    # media_path = None
 
 # allow user to upload lecture slides (powerpoint)
 # st.markdown("### ")
@@ -98,13 +158,19 @@ with st.container():
     slides_file = st.file_uploader(
         "Upload Lecture Slides:",
         type=["pptx", "pdf"],
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        on_change=clear_generated_outputs,
     )
     pptx_path = None
 
 # save them to temp file
-if lecture_file:
-    media_path = save_uploaded_file(lecture_file)
+media_paths: list[Path] = []
+
+if lecture_files:
+    media_paths = [
+        save_uploaded_file(lecture_file)
+        for lecture_file in lecture_files
+    ]
     
 if slides_file:
     pptx_path = save_uploaded_file(slides_file)
@@ -134,11 +200,12 @@ with st.container():
             "Paste Learning Objectives:",
             height=250,
             placeholder="""
-        LO 1: Understand...
-        LO 2: Explain...
-        LO 3: Describe...
-        """,
-        label_visibility="collapsed"
+LO 1: Understand...
+LO 2: Explain...
+LO 3: Describe...
+""",
+            label_visibility="collapsed",
+            on_change=clear_generated_outputs,
         )
     )
 
@@ -151,8 +218,12 @@ generate_study = st.button(
 
 generate_anki = st.button(
     "Generate Anki Deck (.apkg)",
-    use_container_width=True
+    use_container_width=True,
+    disabled=st.session_state.study_guide is None,
 )
+
+if st.session_state.study_guide is None:
+    st.caption("Generate a study guide before creating the Anki deck.")
 
 if generate_study:
     
@@ -164,12 +235,38 @@ if generate_study:
     with st.status("Generating Study Guide...", expanded=True) as status:
     
         # transcribe the lecture from uploaded path
-        if media_path:
-            st.write("Transcribing Lecture...")
+        if media_paths:
+            st.write("Lecture processing order:")
+
+            for index, path in enumerate(media_paths, start=1):
+                st.write(f"{index}. {path.name}")
+                
             model = load_whisper_model()
-            transcript_path = transcribe_lecture(media_path, model)
-        else: 
-            transcript_path = None
+            transcript_paths: list[Path] = []
+
+            for index, media_path in enumerate(
+                media_paths,
+                start=1,
+            ):
+                st.write(
+                    f"Transcribing lecture recording "
+                    f"{index} of {len(media_paths)}..."
+                )
+
+                transcript_path = transcribe_lecture(
+                    media_path,
+                    model,
+                )
+
+                transcript_paths.append(
+                    Path(transcript_path)
+                )
+        else:
+            transcript_paths = []
+            
+        transcript_path = combine_transcripts(
+            transcript_paths
+        )
 
         # convert user uploaded powerpoint to PDF
         if pptx_path:
@@ -184,7 +281,7 @@ if generate_study:
             
         # generate study guide. Don't crash app if unsuccessful
         try:
-            pdf_bytes = generate_study_guide(
+            study_guide = generate_study_guide(
                 transcript_path=transcript_path,
                 slides_path=slides_path,
                 learning_objectives=learning_objectives,
@@ -192,122 +289,132 @@ if generate_study:
                 max_output_tokens=20000
             )
             
+            st.session_state.study_guide = study_guide
+            
         except Exception as e:
             st.error(f"Study guide generation failed:\n{e}")
-            st.stop
+            st.stop()
 
         st.write("Outputting Study Guide...")
-        if lecture_file:
-            lecture_name = Path(lecture_file.name).stem
-            auto_output_name = f"{lecture_name} - Study Guide.pdf"
+        if lecture_files:
+            lecture_name = Path(
+                lecture_files[0].name
+            ).stem
             
         else:
             lecture_name = Path(slides_file.name).stem
-            auto_output_name = f"{lecture_name} - Study Guide.pdf"
+            
+        auto_output_name = f"{lecture_name} - Study Guide.pdf"
+        st.session_state.study_guide_filename = auto_output_name
 
-        st.download_button(
-            "Download Study Guide",
-            data = pdf_bytes,
-            file_name = auto_output_name,
-            mime = "application/pdf"
-        )
+        # st.download_button(
+        #     "Download Study Guide",
+        #     data = study_guide.pdf_bytes,
+        #     file_name = auto_output_name,
+        #     mime = "application/pdf"
+        # )
         
         status.update(
             label = "Study Guide Completed!", state = "complete", expanded=True
         )
+        
+# Render download button separately from the study guide generation
+# this way, the PDF download is not lost when clicking another button
+if st.session_state.study_guide is not None:
+    st.download_button(
+        "Download Study Guide",
+        data=st.session_state.study_guide.pdf_bytes,
+        file_name=st.session_state.study_guide_filename,
+        mime="application/pdf",
+        use_container_width=True,
+    )
 
 
 #### GENERATE ANKI DECK ####
 if generate_anki:
 
-    if not learning_objectives:
-        st.error("Please paste the learning objectives.")
-        st.stop()
+    study_guide = st.session_state.study_guide
 
+    if study_guide is None:
+        st.error(
+            "Please generate a study guide before creating the Anki deck."
+        )
+        st.stop()
 
     with st.status(
         "Generating Anki Deck...",
-        expanded=True
+        expanded=True,
     ) as status:
 
+        st.write("Planning Anki Deck...")
 
-        # Transcribe lecture if provided
-        if media_path:
-
-            st.write("Transcribing Lecture...")
-
-            model = load_whisper_model()
-
-            transcript_path = transcribe_lecture(
-                media_path,
-                model
-            )
-
-        else:
-
-            transcript_path = None
-
-
-        # Convert PowerPoint if provided
-        if pptx_path:
-
-            st.write("Converting PowerPoint to PDF...")
-
-            slides_path = pptx_to_pdf(
-                pptx_path
-            )
-
-        else:
-
-            slides_path = None
-
+        mastery_plan = generate_anki_mastery_plan(
+            study_guide_markdown=study_guide.markdown,
+            model="gpt-5.5",
+        )
 
         st.write("Creating Anki Cards...")
 
+        try:
+            anki_deck = generate_anki_cards(
+                mastery_plan=mastery_plan,
+                model="gpt-5.5",
+            )
+            
+            Path("debug_anki_mastery_plan.json").write_text(
+                mastery_plan.model_dump_json(indent=2),
+                encoding="utf-8",
+            )
 
-        anki_data = generate_anki_cards(
-            transcript_path=transcript_path,
-            slides_path=slides_path,
-            learning_objectives=learning_objectives,
-            model="gpt-5.5"
-        )
+            Path("debug_anki_deck.json").write_text(
+                anki_deck.model_dump_json(indent=2),
+                encoding="utf-8",
+            )
 
+        except Exception as e:
+            status.update(
+                label="Anki Deck Generation Failed",
+                state="error",
+                expanded=True,
+            )
+            st.error(
+                f"Anki card generation failed:\n{e}"
+            )
+            st.stop()
 
         st.write("Building Anki Deck...")
 
-
         if lecture_file:
-
             lecture_name = Path(
                 lecture_file.name
             ).stem
-
+            
         else:
-
             lecture_name = Path(
                 slides_file.name
             ).stem
 
-
         anki_path = create_anki_deck(
             deck_name=lecture_name,
-            cards=anki_data["cards"]
+            cards=[
+                card.model_dump()
+                for card in anki_deck.cards
+            ],
         )
 
-
         with open(anki_path, "rb") as f:
+            anki_bytes = f.read()
 
-            st.download_button(
-                "Download Anki Deck",
-                data=f,
-                file_name=f"{lecture_name} - Anki Deck.apkg",
-                mime="application/octet-stream"
-            )
-
+        st.download_button(
+            "Download Anki Deck",
+            data=anki_bytes,
+            file_name=f"{lecture_name} - Anki Deck.apkg",
+            mime="application/octet-stream",
+            use_container_width=True,
+        )
 
         status.update(
             label="Anki Deck Completed!",
             state="complete",
-            expanded=True
+            expanded=True,
         )
-    
