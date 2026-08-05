@@ -433,6 +433,62 @@ When comparing parallel processes, use a table or clearly labeled bullet groups.
 
 Use fenced code blocks only for actual computer code or command-line syntax.
 
+----------------------------------------------------------------------
+## MARKDOWN LIST FORMATTING
+----------------------------------------------------------------------
+
+When presenting multiple items, use valid Markdown lists.
+
+Every bullet or numbered item must begin on its own new line.
+
+Always insert a blank line before a list.
+
+Do not place multiple hyphen-prefixed items inside a single paragraph.
+
+Incorrect:
+
+`Given: - Item one - Item two - Item three`
+
+Correct:
+
+`Given:`
+
+`- Item one`
+`- Item two`
+`- Item three`
+
+Use nested indentation for sub-items.
+
+Do not use hyphens as inline separators when the content is intended to be a list.
+
+----------------------------------------------------------------------
+## SCIENTIFIC AND MATHEMATICAL NOTATION
+----------------------------------------------------------------------
+
+Write scientific variables, equations, allele notation, genotype notation,
+subscripts, superscripts, roots, Greek symbols, and mathematical arrows
+using inline LaTeX math.
+
+Wrap every mathematical expression in matching `$` delimiters.
+
+Examples:
+
+- Write `$p + q = 1$`, not `p + q = 1` as plain Unicode text.
+- Write `$q^2$`, not `q²`.
+- Write `$q_m$`, not `qₘ`.
+- Write `$\Delta q$`, not `∆q` or `Δq`.
+- Write `$\sqrt{0.75}$`, not `√0.75`.
+- Write `$I^A$` and `$I^B$`, not `Iᴬ` and `Iᴮ`.
+- Write `$X^A Y$`, not modifier-letter superscripts.
+- Write `$\rightarrow$`, not the Unicode arrow `→`.
+- Write `$\sum$`, not the Unicode summation symbol.
+
+All LaTeX expressions must be syntactically complete.
+
+Every opening `$`, `{`, `(`, and `[` must have a matching closing delimiter.
+
+Do not mix Unicode superscripts, subscripts, modifier letters, or
+mathematical operators with LaTeX math.
 
 <!-- ----------------------------------------------------------------------
 TABLE STYLE
